@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/language-Shell-brightgreen)
+
 # OtrScript
 
 Shell脚本,Python脚本集合。
