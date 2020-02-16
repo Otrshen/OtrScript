@@ -12,4 +12,4 @@
 
 文件名 | 用途 |  具体说明 
 -|-|-
-SeeSDKIncludedFiles.sh | 查看.a静态库包含哪些文件 | https://www.otrshen.xyz/p/shell-see-sdk-included-files/ |
+SeeSDKIncludedFiles.sh | 查看.a静态库包含哪些文件 | https://www.otrshen.xyz/p/shell-see-sdk-included-files.html |
