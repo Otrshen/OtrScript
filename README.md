@@ -1,8 +1,8 @@
-![](https://img.shields.io/badge/language-Shell-brightgreen)
+![language](https://img.shields.io/badge/language-Python3%7CShell-brightgreen) ![license](https://img.shields.io/badge/license-MIT-373737)
 
 # OtrScript
 
-Shell脚本,Python脚本集合。
+> Python脚本，Shell脚本集合。
 
 ## 目录说明
 
