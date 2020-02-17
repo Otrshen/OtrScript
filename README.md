@@ -4,12 +4,13 @@
 
 > Python脚本，Shell脚本集合。
 
-## 目录说明
+## 文件说明
 
 ### Python
   
 ### Shell
 
-文件名 | 用途 |  具体说明 
+文件名 | 用途 |  详细说明 
 -|-|-
-SeeSDKIncludedFiles.sh | 查看.a静态库包含哪些文件 | https://www.otrshen.xyz/p/shell-see-sdk-included-files.html |
+see_sdk_included_files.sh | 查看.a静态库包含哪些文件 | https://www.otrshen.xyz/p/shell-see-sdk-included-files.html |
+delete_sdk_conflicting_files.sh<br/>delete_sdk_conflicting_files_supporting.sh | 删除.a静态库中冲突文件并重新打包 | https://www.otrshen.xyz/p/shell-delete-sdk-conflicting-files.html |
