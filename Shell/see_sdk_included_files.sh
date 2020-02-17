@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# author: otrshen
+# author: Otrshen
 # usage: 选项说明
 
-        # 语法: sh SeeSDKIncludedFiles.sh <-p <path>>
+        # 语法: sh see_sdk_included_files.sh <-p <path>>
 
         # OPTIONS:
         #   -p path     SDK路径
@@ -23,8 +23,8 @@ usage() {
 
         # usage: 选项说明
 
-        # 语法:  sh SeeSDKIncludedFiles.sh <-p <path>>
-        # 例:    sh SeeSDKIncludedFiles.sh -p /Desktop/libTestSDK.a     
+        # 语法:  sh see_sdk_included_files.sh <-p <path>>
+        # 例:    sh see_sdk_included_files.sh -p /Desktop/libTestSDK.a     
 
         # OPTIONS:
         #   -p path     SDK路径
@@ -33,7 +33,7 @@ EOF
 }
 
 # 打印
-myLog() {
+my_log() {
     echo ''
     echo '///-----------'
     echo '///' $1
@@ -73,25 +73,25 @@ fi
 
 # 判断文件是否存在
 if [ ! -e $SDK_PATH ];then
-    myLog '文件不存在'
+    my_log '文件不存在'
     exit 1
 fi
 
 # 获取SDK名称
-SDK_NAME=`basename ${SDK_PATH} | awk -F "." '{print $1}'`
+readonly SDK_NAME=`basename ${SDK_PATH} | awk -F "." '{print $1}'`
 # 获取文件后缀
-SDK_SUFFIX=`basename ${SDK_PATH} | awk -F "." '{print $NF}'`
+readonly SDK_SUFFIX=`basename ${SDK_PATH} | awk -F "." '{print $NF}'`
 
 # 判断是否是.a静态库
 if [ ${SDK_SUFFIX} != 'a' ];then
-    myLog '文件不是.a静态库'
+    my_log '文件不是.a静态库'
     exit 1
 fi
 
 # 文件输出路径
-SDK_TEMP_PATH=~/Desktop/OtrScriptTempFiles/${SDK_NAME}/arm64
+readonly SDK_TEMP_PATH=~/Desktop/OtrScriptTempFiles/${SDK_NAME}/arm64
 # arm64文件输出路径
-SDK_OUTPUT_PATH=${SDK_TEMP_PATH}/${SDK_NAME}_arm64.a
+readonly SDK_OUTPUT_PATH=${SDK_TEMP_PATH}/${SDK_NAME}_arm64.a
 
 # 创建临时路径
 mkdir -p ${SDK_TEMP_PATH}
@@ -103,7 +103,7 @@ echo ''
 # 查看arm64SDK包含哪些文件
 ar -t ${SDK_OUTPUT_PATH}
 
-myLog "临时文件路径:${SDK_TEMP_PATH}"
+my_log "临时文件路径:${SDK_TEMP_PATH}"
 
 echo ''
 echo '==============================='
@@ -124,6 +124,6 @@ mkdir -p ${SDK_TEMP_PATH}/file    # 创建文件夹
 cd ${SDK_TEMP_PATH}/file          # 进入file文件夹
 ar -x ../${SDK_NAME}_arm64.a      # 解压.a静态库
 
-myLog "解压成功:${SDK_TEMP_PATH}/file"
+my_log "解压成功:${SDK_TEMP_PATH}/file"
 
 fi
