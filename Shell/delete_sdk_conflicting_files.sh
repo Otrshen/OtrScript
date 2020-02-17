@@ -1,18 +1,21 @@
 #!/bin/bash
 
 # author: Otrshen - https://github.com/Otrshen/OtrScript
-# 
 # usage: 选项说明
 
-        # 语法: sh see_sdk_included_files.sh <-p <path>>
+        # 语法: sh delete_sdk_conflicting_files.sh <-p <path>>
 
         # OPTIONS:
         #   -p path     SDK路径
 #
-# 查看SDK所包含文件
-# 1.将SDK中的arm64文件拆分出来
-# 2.显示SDK中包含的文件
-# 3.可解压arm64SDK的文件
+# 删除SDK中冲突(重复)的文件
+# 1.将SDK中的armv7和arm64文件拆分出来
+# 2.分别解压armv7和arm64文件
+# 3.删除冲突文件
+# 4.重新合并armv7和arm64文件
+
+# 当前文件路径
+readonly CURRENT_PATH=$(cd "$(dirname "$0")";pwd)
 
 # SDK名称
 SDK_PATH="SDK_PATH"
@@ -24,8 +27,8 @@ usage() {
 
         # usage: 选项说明
 
-        # 语法:  sh see_sdk_included_files.sh <-p <path>>
-        # 例:    sh see_sdk_included_files.sh -p /Desktop/libTestSDK.a     
+        # 语法:  sh delete_sdk_conflicting_files.sh <-p <path>>
+        # 例:    sh delete_sdk_conflicting_files.sh -p /Desktop/libTestSDK.a     
 
         # OPTIONS:
         #   -p path     SDK路径
@@ -90,41 +93,42 @@ if [ ${SDK_SUFFIX} != 'a' ];then
 fi
 
 # 文件输出路径
-readonly SDK_TEMP_PATH=~/Desktop/OtrScriptTempFiles/${SDK_NAME}/see_sdk_included_files/arm64
-# arm64文件输出路径
-readonly SDK_OUTPUT_PATH=${SDK_TEMP_PATH}/${SDK_NAME}_arm64.a
+readonly SDK_TEMP_PATH=~/Desktop/OtrScriptTempFiles/${SDK_NAME}/delete_sdk_conflicting_files
+readonly SDK_TEMP_PATH_ARMV7=${SDK_TEMP_PATH}/armv7
+readonly SDK_TEMP_PATH_ARM64=${SDK_TEMP_PATH}/arm64
 
 # 创建临时路径
-mkdir -p ${SDK_TEMP_PATH}
+mkdir -p ${SDK_TEMP_PATH_ARMV7}
+mkdir -p ${SDK_TEMP_PATH_ARM64}
 
-# 拆分出arm64的SDK
-lipo ${SDK_PATH} -thin arm64 -output ${SDK_OUTPUT_PATH}
+# 分离静态库
+lipo ${SDK_PATH} -thin armv7 -output ${SDK_TEMP_PATH_ARMV7}/armv7_${SDK_NAME}.a
+lipo ${SDK_PATH} -thin arm64 -output ${SDK_TEMP_PATH_ARM64}/arm64_${SDK_NAME}.a
 
-echo ''
-# 查看arm64SDK包含哪些文件
-ar -t ${SDK_OUTPUT_PATH}
+# 解压.a 
+cd ${SDK_TEMP_PATH_ARMV7}
+ar -x armv7_${SDK_NAME}.a
+cd ..
 
-my_log "临时文件路径:${SDK_TEMP_PATH}"
+# 删除文件
+sh ${CURRENT_PATH}/delete_sdk_conflicting_files_supporting.sh ${SDK_TEMP_PATH_ARMV7}
 
-echo ''
-echo '==============================='
-echo ''
+# 打包.a
+cd ${SDK_TEMP_PATH_ARMV7}
+ar rcs new_armv7_${SDK_NAME}.a *.o
+cd ..
 
-echo "是否解压该SDK文件? [y/n]"
+cd ${SDK_TEMP_PATH_ARM64}
+ar -x arm64_${SDK_NAME}.a
+cd ..
 
-read tag
-while([[ $tag != y ]] && [[ $tag != n ]])
-do
-echo "请输入y/n"
-read tag
-done
+sh ${CURRENT_PATH}/delete_sdk_conflicting_files_supporting.sh ${SDK_TEMP_PATH_ARM64}
 
-if [ $tag == y ];then
+cd ${SDK_TEMP_PATH_ARM64}
+ar rcs new_arm64_${SDK_NAME}.a *.o
+cd ..
 
-mkdir -p ${SDK_TEMP_PATH}/file    # 创建文件夹
-cd ${SDK_TEMP_PATH}/file          # 进入file文件夹
-ar -x ../${SDK_NAME}_arm64.a      # 解压.a静态库
+# 合并.a
+lipo -create armv7/new_armv7_${SDK_NAME}.a arm64/new_arm64_${SDK_NAME}.a -output ${SDK_NAME}.a
 
-my_log "解压成功:${SDK_TEMP_PATH}/file"
-
-fi
+my_log "完成: ${SDK_TEMP_PATH}"
