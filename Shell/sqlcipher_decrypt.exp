@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+# author: Otrshen - https://github.com/Otrshen/OtrScript
+#
+# 数据库解密
+#
+# 注：密码错误时会报 file is not a database
+
+# 数据库密钥
+set db_key 123456
+# 密文数据库名称
+set db_ciphertext_name ciphertext.db
+# 明文数据库名称
+set db_plaintext_name planintext.db
+
+spawn sqlcipher $db_ciphertext_name
+
+expect {
+    "Enter SQL" 
+    {send "PRAGMA key = '$db_key';\n" ; exp_continue}
+    "PRAGMA key"
+    {send "PRAGMA cipher_migrate;\n" ; exp_continue}
+    "cipher_migrate"
+    {send "ATTACH DATABASE '${db_plaintext_name}' AS decrypt KEY '';\n"; exp_continue}
+    "KEY"
+    {send "SELECT sqlcipher_export('decrypt');\n"; exp_continue}
+    "sqlcipher_export"
+    {send "DETACH DATABASE decrypt;\n"; exp_continue}
+    "DETACH"
+    {send ".q\n"}
+}
+
+interact

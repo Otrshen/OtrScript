@@ -1,0 +1,28 @@
+#!/usr/bin/expect
+
+# author: Otrshen - https://github.com/Otrshen/OtrScript
+#
+# 数据库加密
+#
+
+# 数据库密钥
+set db_key 123456
+# 密文数据库名称
+set db_ciphertext_name ciphertext.db
+# 明文数据库名称
+set db_plaintext_name plaintext.db
+
+spawn sqlcipher $db_plaintext_name
+
+expect {
+    "Enter SQL" 
+    {send "ATTACH DATABASE '$db_ciphertext_name' AS encrypted KEY '$db_key';\n"; exp_continue}
+    "KEY"
+    {send "SELECT sqlcipher_export('encrypted');\n"; exp_continue}
+    "sqlcipher_export"
+    {send "DETACH DATABASE encrypted;\n"; exp_continue}
+    "DETACH"
+    {send ".q\n"}
+}
+
+interact
