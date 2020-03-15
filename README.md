@@ -7,7 +7,11 @@
 ## 文件说明
 
 ### Python
-  
+
+文件名 | 用途 |  详细说明 
+-|-|-
+weekly.py|爬取git提交记录，生成周报|https://www.otrshen.xyz/p/python-crawler-g-weekly-report.html
+
 ### Shell
 
 文件名 | 用途 |  详细说明 
