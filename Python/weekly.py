@@ -1,11 +1,12 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import re
 import yaml
 import argparse
 import requests
+import pyperclip
 
-from enum import Enum
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -13,18 +14,21 @@ from bs4 import BeautifulSoup
 
 parser = argparse.ArgumentParser(usage='参数说明')
 parser.add_argument('-p', dest='page', type=int, help='共查询几页提交记录, page > 0 以page数为准, page <= 0 以YAML文件中的最近推送时间为准', default=0)
+parser.add_argument('-d', dest='daily', type=int, help='日报参数，如传此参数则以YAML文件中日报的最近推送时间为准', default=0)
 args = parser.parse_args()
 
 # ================== 可修改数据 ======================== #
 
 # 总共显示几页数据
 SHOW_PAGE_TOTAL = args.page
+# 是否是日报
+IS_DAILY_PAPER = args.daily
 # push记录包含此字符串则不打印 (DRD : Don't record)
 NO_RECORD_TAG = "DRD"
 # 时间格式，每次爬完Git记录时间，以免下次爬取重复内容
 GMT_FORMAT = '%a, %d %b %Y %H:%M:%S CST'
 # YAML文件路径，将敏感信息放入配置文件
-YAML_FILE_PAHTH = "/Users/a1/Documents/GitHub/otr-config/weekly.yaml"
+YAML_FILE_PAHTH = "/Users/shenming/Desktop/Code/GitHub/otr-config/weekly.yaml"
 # Git URL
 BASE_URL = "http://10.3.40.239:3000"
 LOGIN_URL = f"{BASE_URL}/user/login"
@@ -39,7 +43,6 @@ more_path = ""
 last_push_time = ""
 
 s = requests.Session()
-
 
 # 获取push内容
 def get_push_content(url, params, is_get=False):
@@ -96,6 +99,13 @@ def grouped_data(new_divs):
         # 获取工程名称
         soup = BeautifulSoup(str(new_divs_str), "html.parser")
         a_arr = soup.p.find_all("a")
+        push_user_name = a_arr[0].string
+
+        # 如果推送者不是自己，则跳过此次循环
+        if push_user_name != get_yaml_value("name"):
+            continue
+
+        # 项目名
         pro_name = a_arr[-1].string
 
         # 命令行未设置配置参数则以yaml文件记录的时间为准
@@ -109,13 +119,17 @@ def grouped_data(new_divs):
             else:
                 push_time = ps[-1].span.attrs["data-content"]
 
-            old_push_time = get_yaml_value("push_time")
+            # 获取之前的提交时间
+            if IS_DAILY_PAPER != 0:
+                old_push_time = get_yaml_value("daily_push_time")
+            else:
+                old_push_time = get_yaml_value("push_time")
 
             # 记录最大的时间
             if last_push_time == "":
                 last_push_time = push_time
 
-            if datetime.strptime(push_time, GMT_FORMAT) < datetime.strptime(old_push_time, GMT_FORMAT):
+            if datetime.strptime(push_time, GMT_FORMAT) <= datetime.strptime(old_push_time, GMT_FORMAT):
                 stop_flag = True
                 break
 
@@ -142,8 +156,7 @@ def grouped_data(new_divs):
             for span in spans:
                 content = li_soup.span.string.replace("\n", "")
 
-                # 如是Merge或包含特定字符串则不记录到dict
-                if not ("Merge branch" in content or NO_RECORD_TAG in content):
+                if need_record_content(content):
                     push_dict[pro_name] = content
 
             dict_arr.append(push_dict)
@@ -187,15 +200,21 @@ def show_push_content():
             if k in final_dict:
                 final_dict[k].append(v)
 
-    # 输出
+    # 输出，拼接字符串，并将字符串复制到系统剪贴板
+    result = "\n"
     for k, v in final_dict.items():
         for prok, prov in pro_type.items():
             if k == prov:
                 if len(v) > 0:
-                    print()
-                    print(prok + ":")
+                    result = result + prok + ":" + "\n"
+                    # print(prok + ":")
                     for index, content in enumerate(v):
-                        print(f"{index + 1}. {content}")
+                        result = result + f"{index + 1}. {content}" + "\n"
+                        # print(f"{index + 1}. {content}")
+
+    # 将结果复制到系统剪贴板
+    pyperclip.copy(result)
+    print(result)
 
     # 有输出且命令行未设置page参数，则记录最后的推送时间，下去爬取日志时取此时间之后的推送内容
     if len(dict_arr) > 0 and SHOW_PAGE_TOTAL == 0:
@@ -220,11 +239,27 @@ def set_push_time(time):
         doc = yaml.safe_load(f)
 
     # 修改值
-    doc['company_git']['push_time'] = time
+    if IS_DAILY_PAPER != 0:
+        doc['company_git']['daily_push_time'] = time
+    else:
+        doc['company_git']['push_time'] = time
 
     # 保存修改
     with open(YAML_FILE_PAHTH, 'w', encoding='utf-8') as f:
         yaml.safe_dump(doc, f, default_flow_style=False)
+
+
+# 判断是否记录此内容
+# 周报模式：如是Merge或包含特定字符串则不记录到dict
+# 日报模式不做任何判断
+def need_record_content(content):
+    if IS_DAILY_PAPER != 0:
+        return True
+    else:
+        if not ("Merge branch" in content or NO_RECORD_TAG in content):
+            return True
+        else:
+            return False
 
 
 show_push_content()
