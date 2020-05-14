@@ -250,11 +250,14 @@ def set_push_time(time):
 
 
 # 判断是否记录此内容
-# 周报模式：如是Merge或包含特定字符串则不记录到dict
-# 日报模式不做任何判断
+# 周报模式: 如是Merge或包含特定字符串则不记录到dict
+# 日报模式: 包含Merge则不记录
 def need_record_content(content):
     if IS_DAILY_PAPER != 0:
-        return True
+        if not ("Merge branch" in content):
+            return True
+        else:
+            return False
     else:
         if not ("Merge branch" in content or NO_RECORD_TAG in content):
             return True
