@@ -201,16 +201,15 @@ def show_push_content():
                 final_dict[k].append(v)
 
     # 输出，拼接字符串，并将字符串复制到系统剪贴板
-    result = "\n"
+    result = ""
     for k, v in final_dict.items():
         for prok, prov in pro_type.items():
             if k == prov:
                 if len(v) > 0:
-                    result = result + prok + ":" + "\n"
-                    # print(prok + ":")
+                    result = result + "\n" + prok + ":" + "\n"
                     for index, content in enumerate(v):
-                        result = result + f"{index + 1}. {content}" + "\n"
-                        # print(f"{index + 1}. {content}")
+                        result = result + f"{content}" + "\n"
+                        # result = result + f"{index + 1}. {content}" + "\n"
 
     # 将结果复制到系统剪贴板
     pyperclip.copy(result)
@@ -249,12 +248,12 @@ def set_push_time(time):
         yaml.safe_dump(doc, f, default_flow_style=False)
 
 
-# 判断是否记录此内容
-# 周报模式: 如是Merge或包含特定字符串则不记录到dict
-# 日报模式: 包含Merge则不记录
+# 判断是否记录此内容 （两个判断一样）
+# 周报模式: 如是Merge 或 包含特定字符串 则不记录到dict
+# 日报模式: 如是Merge 或 包含特定字符串 则不记录到dict
 def need_record_content(content):
     if IS_DAILY_PAPER != 0:
-        if not ("Merge branch" in content):
+        if not ("Merge branch" in content or NO_RECORD_TAG in content):
             return True
         else:
             return False
