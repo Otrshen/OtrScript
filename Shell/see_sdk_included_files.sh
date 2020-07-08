@@ -78,16 +78,16 @@ if [ ! -e $SDK_PATH ];then
     exit 1
 fi
 
-# 获取SDK名称
-readonly SDK_NAME=`basename ${SDK_PATH} | awk -F "." '{print $1}'`
-# 获取文件后缀
-readonly SDK_SUFFIX=`basename ${SDK_PATH} | awk -F "." '{print $NF}'`
+# # 获取SDK名称
+# readonly SDK_NAME=`basename ${SDK_PATH} | awk -F "." '{print $1}'`
+# # 获取文件后缀
+# readonly SDK_SUFFIX=`basename ${SDK_PATH} | awk -F "." '{print $NF}'`
 
-# 判断是否是.a静态库
-if [ ${SDK_SUFFIX} != 'a' ];then
-    my_log '文件不是.a静态库'
-    exit 1
-fi
+# # 判断是否是.a静态库
+# if [ ${SDK_SUFFIX} != 'a' ];then
+#     my_log '文件不是.a静态库'
+#     exit 1
+# fi
 
 # 文件输出路径
 readonly SDK_TEMP_PATH=~/Desktop/OtrScriptTempFiles/${SDK_NAME}/see_sdk_included_files/arm64
