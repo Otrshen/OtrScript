@@ -1,4 +1,4 @@
 # 别名
 
 # 显示.a静态库包含文件
-alias showa='sh /Users/shenming/Desktop/Code/GitHub/OtrScript/Shell/see_sdk_included_files.sh -p'
+alias showa='sh ~/Desktop/Code/GitHub/OtrScript/Shell/see_sdk_included_files.sh -p'
