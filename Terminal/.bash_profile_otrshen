@@ -2,3 +2,8 @@
 
 # 显示.a静态库包含文件
 alias showa='sh ~/Desktop/Code/GitHub/OtrScript/Shell/see_sdk_included_files.sh -p'
+
+
+# Cocoapods
+
+alias podupdate='pod update --no-repo-update'
