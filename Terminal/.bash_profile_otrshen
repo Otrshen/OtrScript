@@ -7,3 +7,7 @@ alias showa='sh ~/Desktop/Code/GitHub/OtrScript/Shell/see_sdk_included_files.sh 
 # Cocoapods
 
 alias podupdate='pod update --no-repo-update'
+
+
+# 打包嘟嘟
+alias builddd='sh ~/Desktop/Code/CompanyGit/ET-DoshareApp/archive.sh'
