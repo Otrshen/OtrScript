@@ -28,9 +28,9 @@ NO_RECORD_TAG = "DRD"
 # 时间格式，每次爬完Git记录时间，以免下次爬取重复内容
 GMT_FORMAT = '%a, %d %b %Y %H:%M:%S CST'
 # YAML文件路径，将敏感信息放入配置文件
-YAML_FILE_PAHTH = "/Users/shenming/Desktop/Code/GitHub/otr-config/weekly.yaml"
+YAML_FILE_PATH = "/Users/shenming/Desktop/Code/GitHub/config/weekly.yaml"
 # Git URL
-BASE_URL = "http://10.3.40.239:3000"
+BASE_URL = "http://10.3.43.211:9666"
 LOGIN_URL = f"{BASE_URL}/user/login"
 
 # ====================================================== #
@@ -102,7 +102,7 @@ def grouped_data(new_divs):
         push_user_name = a_arr[0].string
 
         # 如果推送者不是自己，则跳过此次循环
-        if push_user_name != get_yaml_value("name"):
+        if push_user_name != get_yaml_value("username"):
             continue
 
         # 项目名
@@ -179,7 +179,7 @@ def show_push_content():
             # 登录数据
             username = get_yaml_value("username")
             password = get_yaml_value("password")
-            login_data = { "user_name": username, "password": password }
+            login_data = {"user_name": username, "password": password}
 
             r_tuple = get_push_content(LOGIN_URL, login_data)
         else:
@@ -223,7 +223,7 @@ def show_push_content():
 # 获取yaml文件的value (暂无考虑出现异常的情况)
 def get_yaml_value(the_key):
     # 读取文件内容
-    with open(YAML_FILE_PAHTH, encoding='utf-8') as f:
+    with open(YAML_FILE_PATH, encoding='utf-8') as f:
         doc = yaml.safe_load(f)
         if "company_git" in doc and the_key in doc["company_git"]:
             return doc["company_git"][the_key]
@@ -234,7 +234,7 @@ def get_yaml_value(the_key):
 
 # 设置最近推送时间
 def set_push_time(time):
-    with open(YAML_FILE_PAHTH, encoding='utf-8') as f:
+    with open(YAML_FILE_PATH, encoding='utf-8') as f:
         doc = yaml.safe_load(f)
 
     # 修改值
@@ -244,7 +244,7 @@ def set_push_time(time):
         doc['company_git']['push_time'] = time
 
     # 保存修改
-    with open(YAML_FILE_PAHTH, 'w', encoding='utf-8') as f:
+    with open(YAML_FILE_PATH, 'w', encoding='utf-8') as f:
         yaml.safe_dump(doc, f, default_flow_style=False)
 
 
