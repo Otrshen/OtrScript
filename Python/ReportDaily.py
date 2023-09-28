@@ -14,7 +14,10 @@ def report():
     print(content + '\n')
     ManHourSystem.login_and_commit(content)
     print('')
+    ManHourSystem.query_daily_info()
+    print('')
 
 
 if __name__ == "__main__":
     report()
+
