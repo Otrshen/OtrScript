@@ -12,22 +12,6 @@ from bs4 import BeautifulSoup
 
 # git日志爬取工具
 
-# ================== 命令行输入参数，默认值：0 ======================== #
-
-parser = argparse.ArgumentParser(usage='参数说明')
-parser.add_argument('-p', dest='page', type=int, help='共查询几页提交记录, page > 0 以page数为准, page <= 0 以YAML文件中的最近推送时间为准', default=0)
-parser.add_argument('-d', dest='daily', type=int, help='日报参数，如传此参数则以YAML文件中日报的最近推送时间为准', default=0)
-parser.add_argument('-m', dest='monthly', type=int, help='月报参数，如传此参数则以YAML文件中月报的最近推送时间为准', default=0)
-args = parser.parse_args()
-
-# ================== 可修改数据 ======================== #
-
-# 总共显示几页数据
-SHOW_PAGE_TOTAL = args.page
-# 是否是日报
-IS_DAILY_PAPER = args.daily
-# 是否是月报
-IS_MONTHLY_PAPER = args.monthly
 # push记录包含此字符串则不打印 (DRD : Don't record)
 NO_RECORD_TAG = "DRD"
 # 时间格式，每次爬完Git记录时间，以免下次爬取重复内容
@@ -42,10 +26,18 @@ LOGIN_URL = f"{BASE_URL}/user/login"
 
 # 全局变量
 
+# 总共显示几页数据
+SHOW_PAGE_TOTAL = 0
+# 是否是日报
+IS_DAILY_PAPER = 0
+# 是否是月报
+IS_MONTHLY_PAPER = 0
+
 # 更多路径，用于点击更多按钮
 more_path: str = ""
 # 最近推送时间
 last_push_time: str = ""
+# 用户名
 username: str = ""
 
 s = requests.Session()
@@ -311,7 +303,18 @@ def get_daily_content():
 
 # 根据命令行参数，爬取日报或者月报
 if __name__ == "__main__":
-    # # 日报
+    # ================== 命令行输入参数，默认值：0 ======================== #
+    parser = argparse.ArgumentParser(usage='参数说明')
+    parser.add_argument('-p', dest='page', type=int, help='共查询几页提交记录, page > 0 以page数为准, page <= 0 以YAML文件中的最近推送时间为准', default=0)
+    parser.add_argument('-d', dest='daily', type=int, help='日报参数，如传此参数则以YAML文件中日报的最近推送时间为准', default=0)
+    parser.add_argument('-m', dest='monthly', type=int, help='月报参数，如传此参数则以YAML文件中月报的最近推送时间为准', default=0)
+    args = parser.parse_args()
+
+    SHOW_PAGE_TOTAL = args.page
+    IS_DAILY_PAPER = args.daily
+    IS_MONTHLY_PAPER = args.monthly
+
+    # 日报
     # IS_DAILY_PAPER = 1
     print('爬取内容：')
     print(show_push_content(True))
