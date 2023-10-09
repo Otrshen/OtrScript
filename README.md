@@ -10,16 +10,25 @@
 
 文件名 | 用途 |  详细说明 
 -|-|-
-weekly.py|爬取git提交记录，生成周报|https://www.otrshen.xyz/p/python-crawler-g-weekly-report.html
+weekly.py | 爬取git提交记录，生成周报 | -
+ManHourSystem.py | 工时系统接口 | -
+ReportDaily.py | 汇报 | -
+
+```shell
+# 帮助命令
+python3 ReportDaily.py --help
+# 提交某个项目
+python3 ReportDaily.py -d 1
+```
 
 ### Shell
 
 文件名 | 用途 |  详细说明 
 -|-|-
-see_sdk_included_files.sh | 查看.a静态库包含哪些文件 | https://www.otrshen.xyz/p/shell-see-sdk-included-files.html 
-delete_sdk_conflicting_files.sh<br/>delete_sdk_conflicting_files_supporting.sh | 删除.a静态库中冲突文件并重新打包 | https://www.otrshen.xyz/p/shell-delete-sdk-conflicting-files.html
-sqlcipher_decrypt.exp<br/>sqlcipher_encrypt.exp | SQLCipher加解密数据库脚本 | https://www.otrshen.xyz/p/shell-sqlcipher-encrypt-decrypt.html
-confuse.sh | `Objective-C`混淆脚本 | https://www.otrshen.xyz/p/ios-oc-obfuscated-code.html
+see_sdk_included_files.sh | 查看.a静态库包含哪些文件 | -
+delete_sdk_conflicting_files.sh<br/>delete_sdk_conflicting_files_supporting.sh | 删除.a静态库中冲突文件并重新打包 | -
+sqlcipher_decrypt.exp<br/>sqlcipher_encrypt.exp | SQLCipher加解密数据库脚本 | -
+confuse.sh | `Objective-C`混淆脚本 | 无
 
 ### Terminal
 
