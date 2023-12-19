@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import yaml
 import argparse
 import requests
 import pyperclip
