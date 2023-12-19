@@ -1,11 +1,16 @@
 import string
 
+import json
+import time
 import ddddocr
 import requests
 import base64
-import json
-import time
+import Glob
+import YamlTool
 from enum import Enum
+
+
+# 工时系统
 
 
 class ProType(Enum):
@@ -14,17 +19,6 @@ class ProType(Enum):
     # 嘟嘟分享项目
     DOSHARE = 118
 
-
-# 工时系统
-
-BASE_URL = "http://10.3.47.112"
-GET_IMG_URL = f"{BASE_URL}/api/captchaImage"
-# 登录接口
-LOGIN_URL = f"{BASE_URL}/api/login"
-# 汇报接口
-REPORT_URL = f"{BASE_URL}/api/worktime/user/report"
-# 日报详情接口
-DAILY_INFO_URL = f'{BASE_URL}/api/worktime/user/selectPersonal'
 
 token = ''
 # 登录重试次数
@@ -35,7 +29,7 @@ s.headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
 
 def get_img():
-    response = s.get(GET_IMG_URL)
+    response = s.get(Glob.MHS_GET_IMG_URL)
     json_data = json.loads(response.text)
     # print(response.text)
     return json_data
@@ -58,6 +52,11 @@ def get_time_str():
     return ymd
 
 
+# 获取yaml文件的value (暂无考虑出现异常的情况)
+def get_yaml_value(the_key):
+    return YamlTool.get_yaml_value("man_hour_system", the_key)
+
+
 def login():
     global token
     global login_retry_times
@@ -69,8 +68,11 @@ def login():
     json_data = get_img()
     code = ocr_img(json_data)
 
-    dict = {'username': 'shenyn', 'password': 'shen123', 'code': code, 'uuid': json_data['uuid']}
-    response = s.post(url=LOGIN_URL, json=dict)
+    username = get_yaml_value("username")
+    password = get_yaml_value("password")
+
+    dict = {'username': username, 'password': password, 'code': code, 'uuid': json_data['uuid']}
+    response = s.post(url=Glob.MHS_LOGIN_URL, json=dict)
     result_data = json.loads(response.text)
     if result_data['code'] == 200:
         print('🟢 登录成功')
@@ -108,7 +110,7 @@ def commit_daily(params):
         print('🔴 未知项目，无法提交')
         return False
 
-    response = s.post(url=REPORT_URL, json=params, headers={'Authorization': f'Bearer {token}'})
+    response = s.post(url=Glob.MHS_REPORT_URL, json=params, headers={'Authorization': f'Bearer {token}'})
     result_data = json.loads(response.text)
     if result_data['code'] == 200:
         print('🟢 日报提交成功')
@@ -129,12 +131,14 @@ def login_and_commit(content, type):
 def query_daily_info():
     ymd = get_time_str()
     params = {'workingDay': ymd}
-    response = s.post(url=DAILY_INFO_URL, json=params, headers={'Authorization': f'Bearer {token}'})
+    response = s.post(url=Glob.MHS_DAILY_INFO_URL, json=params, headers={'Authorization': f'Bearer {token}'})
     result_data = json.loads(response.text)
     if result_data['code'] == 200:
         print('🟢 日报查询成功：')
         print(json.dumps(result_data['rows'], indent=4, ensure_ascii=False))
     else:
         print('🔴 日报查询失败：' + response.text)
+
+
 
 

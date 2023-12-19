@@ -6,9 +6,12 @@ import yaml
 import argparse
 import requests
 import pyperclip
+import Glob
+import YamlTool
 
 from datetime import datetime
 from bs4 import BeautifulSoup
+
 
 # git日志爬取工具
 
@@ -16,11 +19,6 @@ from bs4 import BeautifulSoup
 NO_RECORD_TAG = "DRD"
 # 时间格式，每次爬完Git记录时间，以免下次爬取重复内容
 GMT_FORMAT = '%a, %d %b %Y %H:%M:%S CST'
-# YAML文件路径，将敏感信息放入配置文件
-YAML_FILE_PATH = "/Users/shenming/Desktop/Code/GitHub/config/weekly.yaml"
-# Git URL
-BASE_URL = "http://10.3.43.211:9666"
-LOGIN_URL = f"{BASE_URL}/user/login"
 
 # ====================================================== #
 
@@ -72,7 +70,7 @@ def get_push_content(url, params, is_get=False):
 
 # 获取More地址
 def get_more_url(path):
-    return f"{BASE_URL}/{path}"
+    return f"{Glob.GIT_BASE_URL}/{path}"
 
 
 # 构建字典
@@ -181,7 +179,7 @@ def show_push_content(need_group):
             password = get_yaml_value("password")
             login_data = {"user_name": username, "password": password}
 
-            r_tuple = get_push_content(LOGIN_URL, login_data)
+            r_tuple = get_push_content(Glob.GIT_LOGIN_URL, login_data)
         else:
             r_tuple = get_push_content(get_more_url(more_path), "", True)
 
@@ -236,14 +234,7 @@ def group_data(dict_arr):
 
 # 获取yaml文件的value (暂无考虑出现异常的情况)
 def get_yaml_value(the_key):
-    # 读取文件内容
-    with open(YAML_FILE_PATH, encoding='utf-8') as f:
-        doc = yaml.safe_load(f)
-        if "company_git" in doc and the_key in doc["company_git"]:
-            return doc["company_git"][the_key]
-
-    # 如无时间则返回 2020-03-08 17:47:32
-    return "Sun, 08 Mar 2020 17:47:32 CST"
+    return YamlTool.get_yaml_value("company_git", the_key)
 
 
 def get_push_time():
@@ -261,20 +252,13 @@ def get_push_time():
 
 # 设置最近推送时间
 def set_push_time(time):
-    with open(YAML_FILE_PATH, encoding='utf-8') as f:
-        doc = yaml.safe_load(f)
-
     # 修改值
     if IS_DAILY_PAPER != 0:
-        doc['company_git']['daily_push_time'] = time
+        YamlTool.set_push_time("company_git", "daily_push_time", time)
     elif IS_MONTHLY_PAPER != 0:
-        doc['company_git']['monthly_push_time'] = time
+        YamlTool.set_push_time("company_git", "monthly_push_time", time)
     else:
-        doc['company_git']['push_time'] = time
-
-    # 保存修改
-    with open(YAML_FILE_PATH, 'w', encoding='utf-8') as f:
-        yaml.safe_dump(doc, f, default_flow_style=False)
+        YamlTool.set_push_time("company_git", "push_time", time)
 
 
 # 判断是否记录此内容 （两个判断一样）

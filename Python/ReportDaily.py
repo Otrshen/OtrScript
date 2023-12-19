@@ -42,5 +42,7 @@ if __name__ == "__main__":
     IS_DOSHARE = args.doshare
     IS_OTHER = args.other
 
+    # IS_DOSHARE = 1
+
     report()
 
