@@ -1,7 +1,7 @@
 import YamlTool
 
 # YAML文件路径，将敏感信息放入配置文件
-YAML_FILE_PATH = "/Users/shenming/Desktop/Code/GitHub/config/weekly.yaml"
+YAML_FILE_PATH = "./weekly.yaml"
 
 # GIT API
 GIT_BASE_URL = YamlTool.get_yaml_value("company_git", "base_url")
