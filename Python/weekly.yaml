@@ -1,3 +1,6 @@
+# 此为模版文件，请勿修改模版文件
+# 复制此模版，将标记[修改]的值修改为真实可用数据，并在Glob.py中将YAML_FILE_PATH的值修改为真实路径
+
 company_git: # 公司git相关配置
   base_url: http://10.3.43.211:9666 # git地址
   daily_push_time: Fri, 22 Dec 2023 17:36:32 CST # 日报时间

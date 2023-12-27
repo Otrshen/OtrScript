@@ -1,6 +1,7 @@
 import YamlTool
 
 # YAML文件路径，将敏感信息放入配置文件
+# 用户需将配置文件路径修改为真实使用的路径
 YAML_FILE_PATH = "./weekly.yaml"
 
 # GIT API
