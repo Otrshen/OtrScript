@@ -1,15 +1,15 @@
-company_git:
-  base_url: http://10.3.43.211:9666
-  daily_push_time: Fri, 22 Dec 2023 17:36:32 CST
-  monthly_push_time: Fri, 22 Dec 2023 17:36:32 CST
+company_git: # 公司git相关配置
+  base_url: http://10.3.43.211:9666 # git地址
+  daily_push_time: Fri, 22 Dec 2023 17:36:32 CST # 日报时间
+  monthly_push_time: Fri, 22 Dec 2023 17:36:32 CST # 周报时间
   pro_type: # [修改]根据项目名自定义转换为中文，例："iOS/ET-VPN"显示为"VPN SDK"
     VPN SDK: iOS/ET-VPN
-  push_time: Mon, 18 Dec 2023 16:44:52 CST
+  push_time: Mon, 18 Dec 2023 16:44:52 CST # 默认时间
   user_tag: /avatars/73 # [修改]定位自己的提交记录
   username: shen # [修改]用户名
   password: eetrust # [修改]密码
 man_hour_system:
-  base_url: http://10.3.47.112
+  base_url: http://10.3.47.112 # 工时地址
   username: 123123 # [修改]用户名
   password: shen # [修改]密码
   monthly_start_time: 2023-12-23 # [修改]月报开始时间
