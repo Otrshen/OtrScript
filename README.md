@@ -42,6 +42,8 @@ pip3 install pyperclip
 pip3 install bs4
 pip3 install chardet
 pip3 install chinesecalendar
+# 请使用指定版本1.4.8
+pip3 install ddddocr
 ```
 
 ## Shell

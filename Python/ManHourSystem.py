@@ -152,14 +152,15 @@ def get_workdays():
     format_str = "%Y-%m-%d"
     start_time = YamlTool.get_yaml_value("man_hour_system", "monthly_start_time")
     end_time = YamlTool.get_yaml_value("man_hour_system", "monthly_end_time")
+    workdays = chinese_calendar.get_dates(start_time, end_time)
 
-    # 判断从yaml取出来的值的类型，适配不同平台
-    if isinstance(start_time, datetime.date):
-        workdays = chinese_calendar.get_dates(start_time, end_time)
-    else:
-        date_start = datetime.datetime.strptime(start_time, format_str).date()
-        date_end = datetime.datetime.strptime(end_time, format_str).date()
-        workdays = chinese_calendar.get_dates(date_start, date_end)
+    # # 判断从yaml取出来的值的类型，适配不同平台
+    # if isinstance(start_time, datetime.date):
+    #     workdays = chinese_calendar.get_dates(start_time, end_time)
+    # else:
+    #     date_start = datetime.datetime.strptime(start_time, format_str).date()
+    #     date_end = datetime.datetime.strptime(end_time, format_str).date()
+    #     workdays = chinese_calendar.get_dates(date_start, date_end)
 
     # start_time = datetime.date(2023, 12, 15)  # 指定开始时间
     # end_time = datetime.date(2023, 12, 24)  # 指定结束时间
@@ -200,8 +201,8 @@ def get_monthly():
     pyperclip.copy(result)
 
 
-login()
-get_monthly()
+# login()
+# get_monthly()
 # query_daily_info()
 
 # 根据命令行参数，爬取日报或者月报
